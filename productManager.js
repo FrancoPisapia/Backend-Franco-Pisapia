@@ -168,10 +168,7 @@ productManager.addProduct(producto3);
 productManager.getProducts();
 
 //Obtengo los productos por id
-console.log(productManager.getProductById(2))
-
-//Creo el archivo JSON 
-//productManager.saveProductFiles();
+//console.log(productManager.getProductById(2))
 
 
 producto3 = {
@@ -189,3 +186,6 @@ productManager.updateProducts(3,producto3)
 //Borrar un producto (para que funcione no tiene que estar declar)
 
 productManager.deleteProduct(3);
+
+//Creo el archivo JSON 
+productManager.saveProductFiles();
