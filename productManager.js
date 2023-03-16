@@ -183,7 +183,7 @@ productManager.updateProducts(3,producto3)
 
 
 
-//Borrar un producto (para que funcione no tiene que estar declar)
+//Borrar un producto
 
 productManager.deleteProduct(3);
 
