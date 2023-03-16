@@ -18,23 +18,26 @@ class ProductManager{
         try
         {
             const data = await fs.readFile(this.path,'utf-8');
-            return this.products = JSON.parse(data)
-        } catch
+
+            return this.products = JSON.parse(data);
+
+        } catch (error)
         {
-            throw new Error ('No puede leerse')
+            throw new Error (`No puede leerse el archivo'+ ${error.message}`)
         }
     }
-
     async saveProductFiles ()
     {
         // Creo el archivo JSON y stringifeo la info del array products 
         try 
         {
+            await fs.access(this.path);
+
             fs.writeFile (this.path, JSON.stringify(this.products))
         } 
-        catch 
+        catch (error)
         {
-            throw new Error ('No se guardó')
+            throw new Error (`No se puede guardar el archivo:' + ${error.message}`)
         }
     }
 
@@ -57,9 +60,9 @@ class ProductManager{
             }
             this.saveProductFiles ()
         } 
-        catch 
+        catch (error)
         {
-            throw new Error ('No hay archivo para actualizar, correr saveProductsFile')
+            throw new Error (`No se puede actualizar el archivo : ${error.message}`)
         }
 
     }
@@ -67,21 +70,25 @@ class ProductManager{
     async deleteProduct(id) {
         try {
           await this.readProductsFromFile();
-          const index = this.products.findIndex((product) => product.id === id);
+
+          //const index = this.products.findIndex((product) => product.id === id);
           const product = this.products.find((product) => product.id === id);
       
-          if (index !== -1) 
+          if (product) 
           {
-            this.products.splice(index, 1);
+
+            this.products= this.products.filter((prod) => prod.id !== id)
+
             await this.saveProductFiles();
             return true;
           }
           return false;
 
         } 
-        catch 
+
+        catch (error)
         {
-          throw new Error("No existe el producto a eliminar");
+          throw new Error(`No se puede eliminar el producto : ${error.message}`);
         }
       }
 
@@ -185,7 +192,7 @@ productManager.updateProducts(3,producto3)
 
 //Borrar un producto
 
-productManager.deleteProduct(3);
+productManager.deleteProduct(1);
 
 //Creo el archivo JSON 
 productManager.saveProductFiles();
