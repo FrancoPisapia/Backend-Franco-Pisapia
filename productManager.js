@@ -42,9 +42,9 @@ class ProductManager{
             
             fs.writeFile (this.path, JSON.stringify(this.products))
         } 
-        catch 
+        catch (error)
         {
-            this.readProductsFromFile();
+            console.log(`No puede crearse el archivo: ${error.message}`)
            
         }
     }
