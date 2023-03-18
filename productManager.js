@@ -15,29 +15,37 @@ class ProductManager{
     async readProductsFromFile ()
     {
         //Leo el archivo json (si este existe) y parseo la info dentro de el
+
+        
         try
         {
+            await fs.access(this.path);
             const data = await fs.readFile(this.path,'utf-8');
-
-            return this.products = JSON.parse(data);
-
+            return this.products = JSON.parse(data)
         } catch (error)
         {
-            throw new Error (`No puede leerse el archivo'+ ${error.message}`)
+            console.log(`El archivo ${this.path} no existe, creando...`)
+            await fs.writeFile(this.path, '[]');
+            return []
+            
         }
     }
+
     async saveProductFiles ()
     {
         // Creo el archivo JSON y stringifeo la info del array products 
+
+        
+        this.readProductsFromFile()
         try 
         {
-            await fs.access(this.path);
-
+            
             fs.writeFile (this.path, JSON.stringify(this.products))
         } 
-        catch (error)
+        catch 
         {
-            throw new Error (`No se puede guardar el archivo:' + ${error.message}`)
+            this.readProductsFromFile();
+           
         }
     }
 
@@ -60,9 +68,9 @@ class ProductManager{
             }
             this.saveProductFiles ()
         } 
-        catch (error)
+        catch 
         {
-            throw new Error (`No se puede actualizar el archivo : ${error.message}`)
+            throw new Error ('No hay archivo para actualizar, correr saveProductsFile')
         }
 
     }
@@ -177,6 +185,9 @@ productManager.getProducts();
 //Obtengo los productos por id
 //console.log(productManager.getProductById(2))
 
+//Creo el archivo JSON 
+productManager.saveProductFiles();
+
 
 producto3 = {
     title:"Sillas Tolix", 
@@ -190,9 +201,5 @@ productManager.updateProducts(3,producto3)
 
 
 
-//Borrar un producto
-
+//Borrar un producto (para que funcione no tiene que estar declar)
 productManager.deleteProduct(1);
-
-//Creo el archivo JSON 
-productManager.saveProductFiles();
