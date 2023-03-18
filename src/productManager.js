@@ -123,7 +123,8 @@ class ProductManager{
     }
     getProducts(){
         //Devuelvo los productos por consola
-        return console.log(this.products);
+        //return console.log(this.products);
+        return this.products;
     }
 
     getProductById (id)
@@ -202,4 +203,20 @@ productManager.updateProducts(3,producto3)
 
 
 //Borrar un producto (para que funcione no tiene que estar declar)
-productManager.deleteProduct(1);
+//productManager.deleteProduct(1);
+
+module.exports = ProductManager
+// const express = require('express');
+// const app = express();
+
+
+// //     async () => {
+// //     await productManager.readProductsFromFile();
+// //     };
+
+// app.get('/products', (req, res) =>{
+//     res.send(productManager.getProducts()) //respnde a la peticion con el contenido
+// });
+
+
+// app.listen(8080,() => console.log('Servidor arriba en el puerto 8080'))
