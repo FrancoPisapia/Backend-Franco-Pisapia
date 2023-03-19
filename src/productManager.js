@@ -1,4 +1,4 @@
-const { readFileSync } = require('fs');
+const { readFileSync, read } = require('fs');
 const { json } = require('stream/consumers');
 
 const fs = require('fs').promises
@@ -27,6 +27,8 @@ class ProductManager{
             console.log(`El archivo ${this.path} no existe, creando...`)
             await fs.writeFile(this.path, '[]');
             return []
+
+            console.log(`no se puede leer el archivo ${error.message}`)
             
         }
     }
@@ -36,7 +38,7 @@ class ProductManager{
         // Creo el archivo JSON y stringifeo la info del array products 
 
         
-        this.readProductsFromFile()
+        //this.readProductsFromFile()
         try 
         {
             
@@ -200,23 +202,5 @@ producto3 = {
 
 productManager.updateProducts(3,producto3)
 
+module.exports = ProductManager;
 
-
-//Borrar un producto (para que funcione no tiene que estar declar)
-//productManager.deleteProduct(1);
-
-module.exports = ProductManager
-// const express = require('express');
-// const app = express();
-
-
-// //     async () => {
-// //     await productManager.readProductsFromFile();
-// //     };
-
-// app.get('/products', (req, res) =>{
-//     res.send(productManager.getProducts()) //respnde a la peticion con el contenido
-// });
-
-
-// app.listen(8080,() => console.log('Servidor arriba en el puerto 8080'))
