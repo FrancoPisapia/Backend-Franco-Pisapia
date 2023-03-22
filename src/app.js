@@ -1,5 +1,7 @@
-const express = require('express');
-const ProductManager = require('./productManager')
+//const express = require('express');
+//const ProductManager = require('./productManager')
+import {ProductManager} from './productManager.js';
+import express from 'express'
 
 const app = express();
 app.use(express.urlencoded({extended:true}))
@@ -10,23 +12,22 @@ const productManager = new ProductManager ();
     await productManager.readProductsFromFile();
   })();
 
-
-app.get('/products', (req, res) =>
-{
-    const products =productManager.getProducts()
-    //const cantidadValores =parseInt(req.query.limit);
-    const pQuantity = parseInt(req.query.q)
-    //console.log(cantidadValores) //no me lo define
-
-    if( Number.isNaN(pQuantity) || pQuantity >= products.length) 
-    {
-        return res.send (products)
-    } else
-    {
-        let productosFiltrados = products.slice(0,pQuantity)
-        res.send(productosFiltrados)
-    }
-});
+  app.get('/products', (req, res) =>
+  {
+      const products =productManager.getProducts()
+      //const cantidadValores =parseInt(req.query.limit);
+      const pQuantity = parseInt(req.query.pQuantity)
+      //console.log(cantidadValores) //no me lo define
+  
+      if( Number.isNaN(pQuantity) || pQuantity >= products.length) 
+      {
+          return res.send (products)
+      } else
+      {
+          let productosFiltrados = products.slice(0,pQuantity)
+          res.send(productosFiltrados)
+      }
+  });
 
 
 app.get('/products/:id', (req, res) => {

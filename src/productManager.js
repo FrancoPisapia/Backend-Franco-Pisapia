@@ -1,9 +1,15 @@
-const { readFileSync, read } = require('fs');
-const { json } = require('stream/consumers');
+// const { readFileSync, read } = require('fs');
+// const { json } = require('stream/consumers');
 
-const fs = require('fs').promises
 
-class ProductManager{
+// const fs = require('fs').promises
+
+
+import { readFileSync } from 'fs';
+import { json } from 'stream/consumers';
+import fs from 'fs/promises';
+
+export class ProductManager{
 
     constructor ()
     {
@@ -202,5 +208,5 @@ producto3 = {
 
 productManager.updateProducts(3,producto3)
 
-module.exports = ProductManager;
+//export default ProductManager
 
