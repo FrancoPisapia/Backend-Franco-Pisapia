@@ -161,15 +161,19 @@ let producto1 = {
     description:"Caja de 25 cerámicas de 25x25", 
     price: 1345, 
     thumnail:"ruta/imagen1.jpg",
+    category:'Solados',
     code: "CE-01",
-    sotck: 100};
+    status:'true',
+    stock: 100};
 
 let producto2 = {
     title:"Perfil IPN 80", 
     description:"Perfil IPN 80 de 12m de largo",
     price:17845, 
     thumbnail:"ruta/imagen2.jpg", 
+    category:'Perfiles de acero',
     code:"PR-E-01", 
+    status:'true',
     stock:107};
 
 let producto3 = {
@@ -177,8 +181,11 @@ let producto3 = {
     description:"2 Sillas Tipo Tullip",
     price: 18900, 
     thumbnail:"ruta/imagen3.jpg",
+    category:'Mobiliario',
     code: "MO-SI-01",
+    status:'true',
     stock: 37};
+
 
     
 
@@ -203,10 +210,11 @@ producto3 = {
     description:"2 Sillas metálicas tipo Tolix",
     price: 18900, 
     thumbnail:"ruta/imagen3.jpg",
+    category:'Mobiliario',
     code: "MO-SI-01",
+    status:'true',
     stock: 37};
 
 productManager.updateProducts(3,producto3)
 
-//export default ProductManager
 
