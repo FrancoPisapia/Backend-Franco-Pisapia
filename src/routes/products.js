@@ -62,8 +62,9 @@ router.get('/:id', (req, res) =>
 //   }
 // });
 
-router.post('/',(req,res)=>
+router.post('/',async (req,res)=>
 {
+    //const productsArchivo = productManager.readProductsFromFile ()
     const products =productManager.getProducts()
     const newProduct = req.body;
     const requiredFields = ['title', 'description', 'code', 'price', 'stock', 'category'];
@@ -82,24 +83,26 @@ router.post('/',(req,res)=>
     //productManager.addProduct(newProduct);
     products[index].id = productId
     //products.push(newProduct) //Con esto hace el 4
-     res.status(201).json( products );
+    await productManager.saveProductFiles();
+    res.status(201).json( products );
 })
 
-router.put('/:pid',(req,res)=>
+router.put('/:pid', (req,res)=>
 {
+  const products =productManager.getProducts()
   const productId= parseInt(req.params.pid)
-  const productData = req.body;
+  const productToUpdate = req.body;
   try
   {
-    const updateProduct= productManager.updateProducts(productId,productData);
+    const updateProduct= productManager.updateProducts(productId,productToUpdate);
 
-    if(!productData)
+    if(!productToUpdate)
     {
       res.status(404).send({error:'Product not found'});
       return;
     }
     
-    res.status(201).json(`Producto actualizado id: ${productId}`);
+    res.status(201).json({productToUpdate, products });
   }
   catch(error)
   {
@@ -112,6 +115,7 @@ router.delete('/:pid',(req,res)=>
 {
   const products= productManager.getProducts()
   const id= parseInt(req.params.pid)
+
   try 
   {
     const deletedProduct= productManager.deleteProduct(id);
