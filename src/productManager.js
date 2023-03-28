@@ -73,12 +73,18 @@ export class ProductManager{
                     ...updateProducts,
                     id
                 }
+                await this.saveProductFiles ();
+                return true
+            } 
+            else
+            {
+            throw new Error("No se encontró el producto con el id proporcionado.");
             }
-            this.saveProductFiles ()
+
         } 
-        catch 
+        catch (error)
         {
-            throw new Error ('No hay archivo para actualizar, correr saveProductsFile')
+            throw new Error (`No puede actualziarse el elemento: ${error.message}`)
         }
 
     }
@@ -127,11 +133,12 @@ export class ProductManager{
         //Defino el id y devuelvo el elemento en forma de objeto
         this.idAuto ++
         return this.products.push({ ...prod, id: this.idAuto });
+        
 
     }
     getProducts(){
         //Devuelvo los productos por consola
-        //return console.log(this.products);
+        this.saveProductFiles();
         return this.products;
     }
 
@@ -156,65 +163,64 @@ export class ProductManager{
 
 const productManager = new ProductManager ();
 
-let producto1 = {
-    title:"Cerámica gris carrara", 
-    description:"Caja de 25 cerámicas de 25x25", 
-    price: 1345, 
-    thumnail:"ruta/imagen1.jpg",
-    category:'Solados',
-    code: "CE-01",
-    status:'true',
-    stock: 100};
+// let producto1 = {
+//     title:"Cerámica gris carrara", 
+//     description:"Caja de 25 cerámicas de 25x25", 
+//     price: 1345, 
+//     thumnail:"ruta/imagen1.jpg",
+//     category:'Solados',
+//     code: "CE-01",
+//     status:'true',
+//     stock: 100};
 
-let producto2 = {
-    title:"Perfil IPN 80", 
-    description:"Perfil IPN 80 de 12m de largo",
-    price:17845, 
-    thumbnail:"ruta/imagen2.jpg", 
-    category:'Perfiles de acero',
-    code:"PR-E-01", 
-    status:'true',
-    stock:107};
+// let producto2 = {
+//     title:"Perfil IPN 80", 
+//     description:"Perfil IPN 80 de 12m de largo",
+//     price:17845, 
+//     thumbnail:"ruta/imagen2.jpg", 
+//     category:'Perfiles de acero',
+//     code:"PR-E-01", 
+//     status:'true',
+//     stock:107};
 
-let producto3 = {
-    title:"Sillas Tulip", 
-    description:"2 Sillas Tipo Tullip",
-    price: 18900, 
-    thumbnail:"ruta/imagen3.jpg",
-    category:'Mobiliario',
-    code: "MO-SI-01",
-    status:'true',
-    stock: 37};
+// let producto3 = {
+//     title:"Sillas Tulip", 
+//     description:"2 Sillas Tipo Tullip",
+//     price: 18900, 
+//     thumbnail:"ruta/imagen3.jpg",
+//     category:'Mobiliario',
+//     code: "MO-SI-01",
+//     status:'true',
+//     stock: 37};
 
 
     
 
 
-//Agrego los productos
-productManager.addProduct(producto1);
-productManager.addProduct(producto2);
-productManager.addProduct(producto3);
+// //Agrego los productos
+// productManager.addProduct(producto1);
+// productManager.addProduct(producto2);
+// productManager.addProduct(producto3);
 
-//Obtengo los productos
-productManager.getProducts();
+// //Obtengo los producto
+// productManager.getProducts();
 
-//Obtengo los productos por id
-//console.log(productManager.getProductById(2))
+// //Obtengo los productos por id
+// //console.log(productManager.getProductById(2))
 
-//Creo el archivo JSON 
+// //Creo el archivo JSON 
 productManager.saveProductFiles();
 
 
-producto3 = {
-    title:"Sillas Tolix", 
-    description:"2 Sillas metálicas tipo Tolix",
-    price: 18900, 
-    thumbnail:"ruta/imagen3.jpg",
-    category:'Mobiliario',
-    code: "MO-SI-01",
-    status:'true',
-    stock: 37};
+// producto3 = {
+//     title:"Sillas Tolix", 
+//     description:"2 Sillas metálicas tipo Tolix",
+//     price: 18900, 
+//     thumbnail:"ruta/imagen3.jpg",
+//     category:'Mobiliario',
+//     code: "MO-SI-02",
+//     status:'true',
+//     stock: 37};
 
-productManager.updateProducts(3,producto3)
-
+// productManager.updateProducts(3,producto3);
 
