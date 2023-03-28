@@ -5,7 +5,7 @@ import uploader from '../utils.js'
 
 
 const app = express();
-const router = express.Router(); 
+const routerProduct = express.Router(); 
 app.use(express.urlencoded({extended:true}))
 
 const productManager = new ProductManager ();
@@ -15,7 +15,7 @@ const productManager = new ProductManager ();
   await productManager.readProductsFromFile();
 })();
 
-router.get('/', (req, res) =>
+routerProduct.get('/', (req, res) =>
   {
     const products =productManager.getProducts()
     //const cantidadValores =parseInt(req.query.limit);
@@ -34,7 +34,7 @@ router.get('/', (req, res) =>
 });
 
 
-router.get('/:id', (req, res) => 
+routerProduct.get('/:id', (req, res) => 
 {
   const id = parseInt(req.params.id);
   const product = productManager.getProductById(id);
@@ -49,20 +49,9 @@ router.get('/:id', (req, res) =>
 });
 
 
-// router.post('/', (req, res) => {
 
-//   const productData = req.body;
-//   console.log(productData)
-//   try {
-//     const product = productManager.addProduct(productData);
-//     const products =productManager.getProducts()
-//     res.status(201).json(products);
-//   } catch (error) {
-//     res.status(400).send({ error: error.message });
-//   }
-// });
 
-router.post('/',async (req,res)=>
+routerProduct.post('/',async (req,res)=>
 {
     //const productsArchivo = productManager.readProductsFromFile ()
     const products =productManager.getProducts()
@@ -87,7 +76,7 @@ router.post('/',async (req,res)=>
     res.status(201).json( products );
 })
 
-router.put('/:pid', (req,res)=>
+routerProduct.put('/:pid', (req,res)=>
 {
   const products =productManager.getProducts()
   const productId= parseInt(req.params.pid)
@@ -111,7 +100,7 @@ router.put('/:pid', (req,res)=>
 })
   
 
-router.delete('/:pid',(req,res)=>
+routerProduct.delete('/:pid',(req,res)=>
 {
   const products= productManager.getProducts()
   const id= parseInt(req.params.pid)
@@ -134,4 +123,4 @@ router.delete('/:pid',(req,res)=>
   }
 })
 
-  export default router
+  export default routerProduct

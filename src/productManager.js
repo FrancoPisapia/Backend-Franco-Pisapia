@@ -161,7 +161,100 @@ export class ProductManager{
 
 }
 
-const productManager = new ProductManager ();
+
+export class CartManager {
+    constructor() {
+      this.carts = [];
+      this.idAuto = 0;
+      this.path= 'carts.json'
+      this.productsPath='Productos.json'
+    }
+  
+    createCart() {
+      const newCart = { id: ++this.idAuto, products: [] };
+      this.carts.push(newCart);
+      this.saveCartFiles ()
+      return newCart;
+    }
+
+
+    async saveCartFiles ()
+    {
+        // Creo el archivo JSON y stringifeo la info del array products 
+
+        
+        //this.readProductsFromFile()
+        try 
+        {
+            
+            fs.writeFile (this.path, JSON.stringify(this.carts))
+        } 
+        catch (error)
+        {
+            console.log(`No puede crearse el archivo: ${error.message}`)
+           
+        }
+    }
+  
+    getCartById(cartId) {
+        const carts= this.carts.find((cart)=> cart.id ===cartId);
+
+        if( carts)
+        {
+         return carts
+        }else
+        {
+         console.error ('Not found')
+        }
+    }
+  
+    addProductToCart(cartId, productId) {
+        const cart = this.getCartById(cartId);
+        if (!cart) {
+          throw new Error(`Cart with id ${cartId} not found`);
+        }
+        
+        const product = productManager.getProductById(productId);
+        if (!product) {
+          throw new Error(`Product with id ${productId} not found`);
+        }
+    
+        // Check if product is already in the cart
+        const existingProduct = cart.products.find((p) => p.id === productId);
+        if (existingProduct) {
+          existingProduct.quantity++;
+        } else {
+          cart.products.push({ ...product, quantity: 1 });
+        }
+    
+        this.saveCartFiles();
+      }
+
+      removeProductFromCart(cartId, productId) {
+
+        const cart = this.getCartById(cartId);
+        console.log(cart)
+        if (!cart) 
+        {
+            throw new Error(`Cart with id ${cartId} not found`);
+        }
+
+        const cartIndex = this.carts.findIndex((cart) => cart.id === cartId);
+        if (cartIndex === -1) {
+          throw new Error('Cart not found');
+        }
+        
+        const productIndex = this.carts[cartIndex].products.findIndex((product) => product.id === productId);
+        if (productIndex === -1) {
+          throw new Error('Product not found in cart');
+        }
+      
+        this.carts[cartIndex].products.splice(productIndex, 1);
+        this.saveCartFiles();
+      }
+  }
+
+  const productManager = new ProductManager ();
 
 // let producto1 = {
 //     title:"Cerámica gris carrara", 
@@ -206,10 +299,10 @@ const productManager = new ProductManager ();
 // productManager.getProducts();
 
 // //Obtengo los productos por id
-// //console.log(productManager.getProductById(2))
+//console.log(productManager.getProductById(2))
 
 // //Creo el archivo JSON 
-productManager.saveProductFiles();
+//productManager.saveProductFiles();
 
 
 // producto3 = {
@@ -224,3 +317,16 @@ productManager.saveProductFiles();
 
 // productManager.updateProducts(3,producto3);
 
+//const cartManager = new CartManager ();
+
+//console.log(cartManager.createCart()); //Anda
+//console.log(cartManager.getCartById(1));//Anda;
+//console.log(productManager.getProducts())//anda
+
+//console.log(productManager.getProductById(2))//anda
+//cartManager.addProductToCart(1,2);
+
+
+//cartManager.removeProductFromCart(1,2)
+
+//cartManager.createCart(); //Anda
