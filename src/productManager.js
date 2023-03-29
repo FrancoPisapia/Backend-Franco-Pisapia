@@ -144,6 +144,7 @@ export class ProductManager{
 
     getProductById (id)
     {
+        const products = this.readProductsFromFile()
         //Busco si el producto existe con el id y si existe me lo devuele sino me tira error
        const product= this.products.find((product)=> product.id ===id);
 

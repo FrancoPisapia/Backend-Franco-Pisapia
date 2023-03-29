@@ -33,12 +33,19 @@ routerCart.get('/:cid',(req,res)=>{
 
 routerCart.post('/:cid/product/:pid', (req, res) => {
   const cartId = parseInt(req.params.cid)
-  const productId = parseInt(req.params.pid)
+  const productId = parseInt(req.params.pid);
   
   const cart = cartManager.getCartById(cartId);
   if (!cart) {
     return res.status(404).json({ message: 'Cart not found' });
   }
+
+  const product = productManager.getProductById(productId);
+  console.log(product)
+  if (!product) {
+    return res.status(404).json({ message: 'Product not found' });
+  }
+
   
   const existingProduct = cart.products.find(p => p.product === productId);
   if (existingProduct) {
@@ -54,4 +61,3 @@ routerCart.post('/:cid/product/:pid', (req, res) => {
 
 
   export default routerCart
-
