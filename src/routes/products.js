@@ -29,7 +29,7 @@ routerProduct.get('/', (req, res) =>
     else
     {
       let productosFiltrados = products.slice(0,limit)
-      res.send(productosFiltrados)
+      res.status(200).send(productosFiltrados)
     }
 });
 
@@ -40,7 +40,7 @@ routerProduct.get('/:id', (req, res) =>
   const product = productManager.getProductById(id);
   if (product) 
   {
-    res.send(product);
+    res.status(200).send(product);
   } 
   else 
   {
@@ -73,7 +73,7 @@ routerProduct.post('/',async (req,res)=>
     products[index].id = productId
     //products.push(newProduct) //Con esto hace el 4
     await productManager.saveProductFiles();
-    res.status(201).json( products );
+    res.status(200).json( products );
 })
 
 routerProduct.put('/:pid', (req,res)=>
@@ -91,7 +91,7 @@ routerProduct.put('/:pid', (req,res)=>
       return;
     }
     
-    res.status(201).json({productToUpdate, products });
+    res.status(200).json({productToUpdate, products });
   }
   catch(error)
   {
@@ -115,7 +115,7 @@ routerProduct.delete('/:pid',(req,res)=>
       return;
     }
     
-    res.json(`Producto eliminado id: ${id}`);
+    res.status(200).json(`Producto eliminado id: ${id}`);
   }
   catch(error)
   {

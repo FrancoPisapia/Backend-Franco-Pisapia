@@ -49,7 +49,7 @@ routerCart.post('/:cid/product/:pid', (req, res) => {
   
   cartManager.saveCartFiles();
   
-  res.json({ message: 'Product added to cart', cart });
+  res.status(200).json({ message: 'Product added to cart', cart });
 });
 
 
