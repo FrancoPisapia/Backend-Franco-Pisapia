@@ -1,6 +1,6 @@
 import {CartManager,ProductManager} from '../productManager.js';
 import express from 'express'
-import uploader from '../utils.js'
+import uploader from '../utils/multer.js'
 
 const app = express();
 const routerCart = express.Router(); 
