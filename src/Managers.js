@@ -89,9 +89,9 @@ export class ProductManager{
 
     }
 
-    async deleteProduct(id) {
-        try {
-          await this.readProductsFromFile();
+    deleteProduct(id) {
+        
+          this.readProductsFromFile();
 
           //const index = this.products.findIndex((product) => product.id === id);
           const product = this.products.find((product) => product.id === id);
@@ -101,17 +101,13 @@ export class ProductManager{
 
             this.products= this.products.filter((prod) => prod.id !== id)
 
-            await this.saveProductFiles();
+            this.saveProductFiles();
             return true;
           }
           return false;
 
-        } 
+        
 
-        catch (error)
-        {
-          throw new Error(`No se puede eliminar el producto : ${error.message}`);
-        }
       }
 
 
@@ -153,7 +149,7 @@ export class ProductManager{
         return product
        }else
        {
-        console.error ('Not found')
+        console.error ('Product not found')
        }
 
     }
@@ -209,49 +205,6 @@ export class CartManager {
         }
     }
   
-    // addProductToCart(cartId, productId) {
-    //     const cart = this.getCartById(cartId);
-    //     if (!cart) {
-    //       throw new Error(`Cart with id ${cartId} not found`);
-    //     }
-        
-    //     const product = productManager.getProductById(productId);
-    //     if (!product) {
-    //       throw new Error(`Product with id ${productId} not found`);
-    //     }
-    
-    //     // Check if product is already in the cart
-    //     const existingProduct = cart.products.find((p) => p.id === productId);
-    //     if (existingProduct) {
-    //       existingProduct.quantity++;
-    //     } else {
-    //       cart.products.push({ ...product, quantity: 1 });
-    //     }
-    
-    //     this.saveCartFiles();
-    //   }
-
-      // removeProductFromCart(cartId, productId) {
-
-      //   const cart = this.getCartById(cartId);
-      //   if (!cart) 
-      //   {
-      //       throw new Error(`Cart with id ${cartId} not found`);
-      //   }
-
-      //   const cartIndex = this.carts.findIndex((cart) => cart.id === cartId);
-      //   if (cartIndex === -1) {
-      //     throw new Error('Cart not found');
-      //   }
-        
-      //   const productIndex = this.carts[cartIndex].products.findIndex((product) => product.id === productId);
-      //   if (productIndex === -1) {
-      //     throw new Error('Product not found in cart');
-      //   }
-      
-      //   this.carts[cartIndex].products.splice(productIndex, 1);
-      //   this.saveCartFiles();
-      // }
   }
 
   const productManager = new ProductManager ();

@@ -2,7 +2,7 @@
 //const ProductManager = require('./productManager')
 //const productsRouter = require('./routes/products')
 
-import {ProductManager,CartManager} from './productManager.js';
+import {ProductManager,CartManager} from '../src/Managers.js';
 import express from 'express'
 import productsRouter from './routes/products.js'
 import cartsRouter from './routes/carts.js'

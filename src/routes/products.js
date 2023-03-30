@@ -1,4 +1,4 @@
-import {ProductManager} from '../productManager.js';
+import {ProductManager} from '../Managers.js';
 import express from 'express'
 import uploader from '../utils/multer.js'
 
@@ -58,6 +58,7 @@ routerProduct.post('/',async (req,res)=>
     const requiredFields = ['title', 'description', 'code', 'price', 'stock', 'category'];
     const missingFields = requiredFields.filter((field) => !newProduct[field]);
 
+    
     if (missingFields.length > 0) 
     {
       return res.status(400).json({ error: `Faltan los siguientes campos obligatorios: ${missingFields}` });  
@@ -101,12 +102,11 @@ routerProduct.put('/:pid', (req,res)=>
 
 routerProduct.delete('/:pid',(req,res)=>
 {
-  const products= productManager.getProducts()
   const id= parseInt(req.params.pid)
 
-  try 
-  {
+
     const deletedProduct= productManager.deleteProduct(id);
+    console.log(deletedProduct)
 
     if( !deletedProduct)
     {
@@ -115,11 +115,8 @@ routerProduct.delete('/:pid',(req,res)=>
     }
     
     res.status(200).json(`Producto eliminado id: ${id}`);
-  }
-  catch(error)
-  {
-    res.status(400).send({ error: error.message });
-  }
+  
+
 })
 
   export default routerProduct

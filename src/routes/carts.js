@@ -1,4 +1,4 @@
-import {CartManager,ProductManager} from '../productManager.js';
+import {CartManager,ProductManager} from '../Managers.js';
 import express from 'express'
 import uploader from '../utils/multer.js'
 
