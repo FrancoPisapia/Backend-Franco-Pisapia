@@ -234,7 +234,6 @@ export class CartManager {
       removeProductFromCart(cartId, productId) {
 
         const cart = this.getCartById(cartId);
-        console.log(cart)
         if (!cart) 
         {
             throw new Error(`Cart with id ${cartId} not found`);

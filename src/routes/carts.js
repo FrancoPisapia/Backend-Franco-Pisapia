@@ -60,4 +60,32 @@ routerCart.post('/:cid/product/:pid', (req, res) => {
 });
 
 
+routerCart.delete('/:cid/product/:pid', (req, res) => {
+  const cartId = parseInt(req.params.cid);
+  const productId = parseInt(req.params.pid);
+  
+  const cart = cartManager.getCartById(cartId);
+  if (!cart) {
+    return res.status(404).json({ message: 'Cart not found' });
+  }
+  
+  const existingProduct = cart.products.find(p => p.product === productId);
+  if (existingProduct) {
+  if (existingProduct.quantity > 1) {
+  existingProduct.quantity--;
+  } 
+  else 
+  {
+  const index = cart.products.indexOf(existingProduct);
+  cart.products.splice(index, 1);
+  }
+  } else {
+  return res.status(404).json({ message: 'Product not found in cart' });
+  }
+  
+  cartManager.saveCartFiles();
+  
+  res.status(200).json({ message: 'Product removed from cart', cart });
+  });
+
   export default routerCart
