@@ -1,13 +1,14 @@
-import path from 'path';
+//import path from 'path';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
+import { resolve } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+//const __dirname = path.dirname(__filename);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, __dirname +'/public');
+    cb(null, resolve('public'));
   },
   filename: function(req, file, cb) {
     cb(null, file.originalname);

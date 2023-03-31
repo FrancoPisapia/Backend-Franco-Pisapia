@@ -17,10 +17,9 @@ const productManager = new ProductManager ();
 routerProduct.get('/', (req, res) =>
   {
     const products =productManager.getProducts()
-    //const cantidadValores =parseInt(req.query.limit);
+ 
     const limit = parseInt(req.query.limit)
-    //console.log(cantidadValores) //no me lo define
-  
+
     if( Number.isNaN(limit) || limit >= products.length) 
     {
       return res.send (products)
@@ -50,21 +49,22 @@ routerProduct.get('/:id', (req, res) =>
 
 
 
-// routerProduct.post('/imagen/:pid', uploader.single('file'), (req,res) =>
-// {
-//   const products = productManager.getProducts()
-//   const productId= parseInt(req.params.pid);
-//   const product = productManager.getProductById(productId);
+routerProduct.post('/imagen/:pid', uploader.single('file'), (req,res) =>
+{
+  const products = productManager.getProducts()
+  const productId= parseInt(req.params.pid);
+  const product = productManager.getProductById(productId);
 
-//   if(!req.file)
-//   {
-//     res.status(400).send({ status: 'error', error: "No se pudo guardar la imagen." });
-//   }
-//   const path= req.file.path
-//   product.thumbnail=({path})
+  if(!req.file)
+  {
+    res.status(400).send({ status: 'error', error: "No se pudo guardar la imagen." });
+  }
+  const path= req.file.path
+  product.thumbnail=path
 
-//   res.send({ status: 'success', message: 'Thumbnail created' })
-// })
+  productManager.saveProductFiles();
+  res.send({ status: 'success', message: 'Thumbnail created' })
+})
 
 routerProduct.post('/',async (req,res)=>
 {
