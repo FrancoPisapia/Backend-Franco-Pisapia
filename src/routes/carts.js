@@ -54,8 +54,7 @@ routerCart.post('/:cid/product/:pid', (req, res) => {
   }
   
   cartManager.saveCartFiles();
-  
-  //cartManager.addProductToCart(cartId,productId)
+
   res.status(200).json({ message: 'Product added to cart', cart });
 });
 

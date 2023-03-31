@@ -138,7 +138,7 @@ export class ProductManager{
         return this.products;
     }
 
-    async getProductById (id)
+    getProductById (id)
     {
         const products = this.readProductsFromFile()
         //Busco si el producto existe con el id y si existe me lo devuele sino me tira error
