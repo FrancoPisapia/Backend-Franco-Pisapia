@@ -50,6 +50,22 @@ routerProduct.get('/:id', (req, res) =>
 
 
 
+// routerProduct.post('/imagen/:pid', uploader.single('file'), (req,res) =>
+// {
+//   const products = productManager.getProducts()
+//   const productId= parseInt(req.params.pid);
+//   const product = productManager.getProductById(productId);
+
+//   if(!req.file)
+//   {
+//     res.status(400).send({ status: 'error', error: "No se pudo guardar la imagen." });
+//   }
+//   const path= req.file.path
+//   product.thumbnail=({path})
+
+//   res.send({ status: 'success', message: 'Thumbnail created' })
+// })
+
 routerProduct.post('/',async (req,res)=>
 {
     //const productsArchivo = productManager.readProductsFromFile ()
@@ -104,9 +120,7 @@ routerProduct.delete('/:pid',(req,res)=>
 {
   const id= parseInt(req.params.pid)
 
-
     const deletedProduct= productManager.deleteProduct(id);
-    console.log(deletedProduct)
 
     if( !deletedProduct)
     {
