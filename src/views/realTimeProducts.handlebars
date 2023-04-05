@@ -80,11 +80,11 @@ socket.emit ('message', 'Nuevo cliente conectado');
       const price = priceInput.value;
 
       const listItem = document.createElement('li');
-      listItem.textContent = `${productInput} - ${priceInput}`;
+      listItem.textContent = `${product} - ${priceInput}`;
       productList.appendChild(listItem);
 
 
-      socket.emit('chatRoom1', {productInput,priceInput});
+      socket.emit('chatRoom1', `Producto agregado ${productInput} ${priceInput}`);
 
 
 
