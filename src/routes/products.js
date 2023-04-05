@@ -22,14 +22,56 @@ routerProduct.get('/', (req, res) =>
 
     if( Number.isNaN(limit) || limit >= products.length) 
     {
-      return res.send (products)
+      //return res.send (products);
+      return res.render('index',{
+        products
+      })
     } 
     else
     {
       let productosFiltrados = products.slice(0,limit)
-      res.status(200).send(productosFiltrados)
+      //res.status(200).send(productosFiltrados);
+      return res.render('index',{
+        productosFiltrados
+      })
     }
+
+
 });
+
+//Actualizacion producto
+routerProduct.get('/realtimeProducts',(req,res)=>{
+  const products =productManager.getProducts()
+ 
+  const limit = parseInt(req.query.limit)
+
+  if( Number.isNaN(limit) || limit >= products.length) 
+  {
+    //return res.send (products);
+    return res.render('realTimeProducts',{
+      products
+    })
+  } 
+  else
+  {
+    let productosFiltrados = products.slice(0,limit)
+    //res.status(200).send(productosFiltrados);
+    return res.render('index',{
+      productosFiltrados
+    })
+
+  }
+
+
+});
+
+// routerProduct.get('/p',(req,res)=>{
+//   const products =productManager.getProducts()
+//     res.render('index',{
+//       products
+//     })
+// });
+
 
 
 routerProduct.get('/:id', (req, res) => 
@@ -64,6 +106,7 @@ routerProduct.post('/imagen/:pid', uploader.single('file'), (req,res) =>
 
   productManager.saveProductFiles();
   res.send({ status: 'success', message: 'Thumbnail created' })
+
 })
 
 routerProduct.post('/',async (req,res)=>
@@ -90,6 +133,8 @@ routerProduct.post('/',async (req,res)=>
     //products.push(newProduct) //Con esto hace el 4
     await productManager.saveProductFiles();
     res.status(200).json( products );
+
+
 })
 
 routerProduct.put('/:pid', (req,res)=>

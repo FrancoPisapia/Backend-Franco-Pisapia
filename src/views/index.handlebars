@@ -1,3 +1,13 @@
 <div>
-    <h1>Hola{{name}}</h1>
+    <h1>All Products</h1>
+    
+
+    <ul id="productos">
+      {{#each products}}
+        <li>{{this.title}} - {{this.price}}</li>
+      {{/each}}
+    </ul>
+
 </div>
+
+<script src="/js/index.js"></script>
