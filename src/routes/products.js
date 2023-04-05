@@ -56,7 +56,7 @@ routerProduct.get('/realtimeProducts',(req,res)=>{
   {
     let productosFiltrados = products.slice(0,limit)
     //res.status(200).send(productosFiltrados);
-    return res.render('index',{
+    return res.render('realTimeProducts',{
       productosFiltrados
     })
 
