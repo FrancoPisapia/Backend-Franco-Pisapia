@@ -2,13 +2,14 @@
 //const ProductManager = require('./productManager')
 //const productsRouter = require('./routes/products')
 
-import {ProductManager,CartManager} from '../src/Managers.js';
+import {ProductManager,CartManager} from '../src/dao/fileSystem/Managers.js';
 import express from 'express'
 import productsRouter from './routes/products.js'
 import cartsRouter from './routes/carts.js';
 import handlebars from 'express-handlebars';
 import __dirname from './utils/handlebars.js';
 import {Server} from 'socket.io';
+import mongoose from "mongoose";
 
 
 const app = express();
@@ -23,12 +24,25 @@ const socketServer = new Server (httpServer)
 app.engine('handlebars', handlebars.engine());
 app.set('views',__dirname+'/views');
 app.set('view engine', 'handlebars');
-app.use(express.static(__dirname+'/public'))
+app.use(express.static(__dirname+'/public'));
+
+
+//Mongoose
+mongoose.connect('mongodb+srv://francopisapia405:uPTbiSDQYTlKc3wm@codercluster.xlmgp1b.mongodb.net/?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('Connected to database'))
+  .catch((err) => console.log(`Error connecting to database: ${err}`));
+
 
 //Routers
 app.use(express.json());
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
+
+
+
 
 
 // Websockets

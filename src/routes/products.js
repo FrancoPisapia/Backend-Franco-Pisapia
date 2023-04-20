@@ -1,6 +1,8 @@
-import {ProductManager} from '../Managers.js';
+import {ProductManager} from '../dao/fileSystem/Managers.js';
 import express from 'express'
 import uploader from '../utils/multer.js'
+import { productsModel } from '../dao/models/productsModels.js';
+import router from '../../../clases/clase 14 20-04-23/Ejercicio-clase/src/routes/studentsRouters.js';
 
 
 const app = express();
@@ -10,6 +12,79 @@ app.use(express.urlencoded({extended:true}))
 const productManager = new ProductManager ();
 
 
+//  **********************************Mongo DataBase*************************************************//
+//Busqueda de todos los objetos
+routerProduct.get ('/',async (req,res)=>{
+ try{
+    let products = await productsModel.find();
+    //res.send({result:'seccess',payload:products});
+    res.status(200).send(products)
+ }
+ catch (e)
+ {
+    console.log(`cannot get users with mongoose ${e}`)
+ }
+
+});
+
+
+//Busqueda de objeto por id
+routerProduct.get ('/:pid',async (req,res)=>{
+
+    let {pid} = req.params
+    let product = await productsModel.find({_id:pid});
+    
+    if(product){
+      res.status(200).send(product)
+    } else {
+      res.status(404).send({ error: 'Producto no encontrado' });
+    }
+ });
+
+routerProduct.post('/',async (req,res)=>{
+
+  let {title,description,code,price,stock,category} =req.body;
+
+  if(!title||!description||!code || !price || !stock || !category) return res.send({status:404, error:'Incomplete values'});
+
+
+  let result = await productsModel.create({
+     title,
+     description,
+     code,
+     price,
+     stock,
+     category
+  });
+
+  res.status(200).send(result)
+});
+
+routerProduct.put('/:pid',async (req,res)=>{
+  let {pid} = req.params;
+
+  let productToReplace = req.body;
+  if(!productToReplace.title || !productToReplace.description|| !productToReplace.code || !productToReplace.price || !productToReplace.stock || !productToReplace.category){
+     return res.send({status:'error',error : "Complete all values"});
+  };
+  let result= await productsModel.updateOne ({_id:pid},productToReplace);
+  res.send({status:'success', payload:result})
+});
+
+
+routerProduct.delete ('/:pid', async (req,res)=>{
+  let {pid} = req.params;
+  let result = await productsModel.deleteOne({_id:pid});
+  res.status(200).send(result)
+});
+
+
+
+
+
+
+
+//  **********************************FileSystem*************************************************//
 (async () => {
   await productManager.readProductsFromFile();
 })();
