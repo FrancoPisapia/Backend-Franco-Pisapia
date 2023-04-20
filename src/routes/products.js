@@ -65,10 +65,10 @@ routerProduct.put('/:pid',async (req,res)=>{
 
   let productToReplace = req.body;
   if(!productToReplace.title || !productToReplace.description|| !productToReplace.code || !productToReplace.price || !productToReplace.stock || !productToReplace.category){
-     return res.send({status:'error',error : "Complete all values"});
+     return res.send({status:404,error : "Complete all values"});
   };
   let result= await productsModel.updateOne ({_id:pid},productToReplace);
-  res.send({status:'success', payload:result})
+  res.status(200).send(result)
 });
 
 
