@@ -2,7 +2,7 @@ import {ProductManager} from '../dao/fileSystem/Managers.js';
 import express from 'express'
 import uploader from '../utils/multer.js'
 import { productsModel } from '../dao/models/productsModels.js';
-import router from '../../../clases/clase 14 20-04-23/Ejercicio-clase/src/routes/studentsRouters.js';
+
 
 
 const app = express();
