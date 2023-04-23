@@ -16,7 +16,10 @@ const productManager = new ProductManager();
 //Crear un carrito vacio
 routerCart.post('/',async (req,res)=>{
 
-  let products = []
+  let products = [{
+    productID:"",
+    quantity:0
+  }]
   const carts = await cartModel.create({
     products
   })
@@ -55,34 +58,62 @@ routerCart.get('/:cid', async (req,res)=>{
 //Agregar productos aun carrito existente
 routerCart.post('/:cid/product/:pid', async (req, res) =>{
   const {cid, pid} = req.params;
+  const productToAdd = req.body;
+
   //const {pid} = (req.params.pid);
-  const products = await productsModel.find()
+
   const cart = await cartModel.find({_id:cid});
   if (!cart) {
     return res.status(404).json({ message: 'Cart not found' });
   }
-  console.log(products);
-  const product = await productsModel.find({ code: pid });
-  //const product = products.find(c => c.code === pid);
-  console.log(product)
-  // const product = await cartModel.find({'products._id':pid});
-  // if (!product) {
-  //   return res.status(404).json({ message: 'Product not found' });
-  // }
+
+  const product = await productsModel.findOne({ _id: pid });
+  if (!product) {
+    return res.status(404).json({ message: 'Product not found' });
+  }
+
+
+
+
+  const existingProduct = await cartModel.find({products:{$elemMatch:{_id:pid}}});
+
+  console.log(cart);
+  console.log(existingProduct[0].products)
+
+  //const existingProduct = await cartModel.find({products:{$elemMatch: { quantity: 5 }}});
+
+
+  //console.log(existingProduct)
+
+  // if (existingProduct.length != 0) {
+  //   existingProduct:{
+  //     quantity ++
+  //   }
+  // } else {
+  //   const push = {
+  //     _id:pid,
+  //     quantity:1
+  //   }
 
     
-  // const existingProduct = await cartModel.find({products:pid})
-  // if (existingProduct) {
-  //   existingProduct.quantity++;
-  // } else {
-  //   await cartModel.create({ 
-  //     product: pid, 
-  //     quantity: 1 
-  //   });
-  // }
-  
-  res.status(200).json({ message: 'Product added to cart', product });
+    //const cartNuevo = cart[0].products.push(push)
+
+    //const result = cartModel.updateOne({_id:cid}, cartNuevo);
+    //console.log(result)
+  //}
+
+  //let result= await cartModel.updateOne ({_id:cid},productToAdd);
+  //res.status(200).send(result)
+  //res.status(200).json({ message: 'Product added to cart', cart});
 });
+
+
+
+routerCart.delete('/:cid', async (req,res)=>{
+  const cid = req.params;
+  let result = await cartModel.deleteOne({_id:cid});
+  res.status(200).send(result)
+})
 
 
 
