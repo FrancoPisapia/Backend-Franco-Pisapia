@@ -17,7 +17,6 @@ const productManager = new ProductManager();
 routerCart.post('/',async (req,res)=>{
 
   let products = [{
-    productID:"",
     quantity:0
   }]
   const carts = await cartModel.create({
@@ -76,14 +75,33 @@ routerCart.post('/:cid/product/:pid', async (req, res) =>{
 
 
   const existingProduct = await cartModel.find({products:{$elemMatch:{_id:pid}}});
+  const productInCarts = await cartModel.findOne({ _id: cid, "products._id": pid });
+
 
   console.log(cart);
-  console.log(existingProduct[0].products)
+  console.log(existingProduct)
+  console.log(productInCarts);
+  const productId = product._id
+  console.log (product._id);
+  console.log(cart[0].products[0].quantity)
 
   //const existingProduct = await cartModel.find({products:{$elemMatch: { quantity: 5 }}});
 
 
   //console.log(existingProduct)
+
+  if (productInCarts) {
+    console.log('existe');
+    const result = await cartModel.updateOne(
+      {_id:cid,"products._id":pid},
+      {$inc:{"products.$.quantity":1}});
+    console.log(result)
+  } else {
+    const result = await cartModel.updateOne(
+      {_id:cid},
+      {$push:{products: {_id:pid,quantity:1}}})
+    console.log(result)
+  }
 
   // if (existingProduct.length != 0) {
   //   existingProduct:{
@@ -104,7 +122,7 @@ routerCart.post('/:cid/product/:pid', async (req, res) =>{
 
   //let result= await cartModel.updateOne ({_id:cid},productToAdd);
   //res.status(200).send(result)
-  //res.status(200).json({ message: 'Product added to cart', cart});
+  res.status(200).json({ message: 'Product added to cart', cart});
 });
 
 

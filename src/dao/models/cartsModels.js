@@ -5,7 +5,6 @@ const cartsCollection = 'carts';
 const cartsSchema = new mongoose.Schema({
     //Propiedades que querramos que tenga el usuario en nuestra base de datos
     products: [{
-        productID: { type: String, required: true },
         quantity: { type: Number,required: true}
       }]
 });
