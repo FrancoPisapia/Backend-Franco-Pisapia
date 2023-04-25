@@ -16,9 +16,7 @@ const productManager = new ProductManager();
 //Crear un carrito vacio
 routerCart.post('/',async (req,res)=>{
 
-  let products = [{
-    quantity:0
-  }]
+  let products = []
   const carts = await cartModel.create({
     products
   })
@@ -57,81 +55,80 @@ routerCart.get('/:cid', async (req,res)=>{
 //Agregar productos aun carrito existente
 routerCart.post('/:cid/product/:pid', async (req, res) =>{
   const {cid, pid} = req.params;
-  const productToAdd = req.body;
-
-  //const {pid} = (req.params.pid);
 
   const cart = await cartModel.find({_id:cid});
   if (!cart) {
-    return res.status(404).json({ message: 'Cart not found' });
+    return res.status(404).send({ message: 'Cart not found' });
   }
 
   const product = await productsModel.findOne({ _id: pid });
   if (!product) {
-    return res.status(404).json({ message: 'Product not found' });
+    return res.status(404).send({ message: 'Product not found' });
   }
 
-
-
-
-  const existingProduct = await cartModel.find({products:{$elemMatch:{_id:pid}}});
   const productInCarts = await cartModel.findOne({ _id: cid, "products._id": pid });
 
-
-  console.log(cart);
-  console.log(existingProduct)
-  console.log(productInCarts);
-  const productId = product._id
-  console.log (product._id);
-  console.log(cart[0].products[0].quantity)
-
-  //const existingProduct = await cartModel.find({products:{$elemMatch: { quantity: 5 }}});
-
-
-  //console.log(existingProduct)
-
   if (productInCarts) {
-    console.log('existe');
+
     const result = await cartModel.updateOne(
       {_id:cid,"products._id":pid},
       {$inc:{"products.$.quantity":1}});
-    console.log(result)
   } else {
     const result = await cartModel.updateOne(
       {_id:cid},
       {$push:{products: {_id:pid,quantity:1}}})
-    console.log(result)
   }
 
-  // if (existingProduct.length != 0) {
-  //   existingProduct:{
-  //     quantity ++
-  //   }
-  // } else {
-  //   const push = {
-  //     _id:pid,
-  //     quantity:1
-  //   }
-
-    
-    //const cartNuevo = cart[0].products.push(push)
-
-    //const result = cartModel.updateOne({_id:cid}, cartNuevo);
-    //console.log(result)
-  //}
-
-  //let result= await cartModel.updateOne ({_id:cid},productToAdd);
-  //res.status(200).send(result)
-  res.status(200).json({ message: 'Product added to cart', cart});
+  res.status(200).send({ message: 'Product added to cart', cart});
 });
 
 
 
-routerCart.delete('/:cid', async (req,res)=>{
-  const cid = req.params;
-  let result = await cartModel.deleteOne({_id:cid});
-  res.status(200).send(result)
+//Eliminar un producto existente
+routerCart.delete('/:cid/product/:pid', async (req, res) =>{
+  const {cid, pid} = req.params;
+
+
+  const cart = await cartModel.find({_id:cid});
+  if (!cart) {
+    return res.status(404).send({ message: 'Cart not found' });
+  }
+
+  const product = await productsModel.findOne({ _id: pid });
+  if (!product) {
+    return res.status(404).send({ message: 'Product not found' });
+  }
+
+  const productInCarts = await cartModel.findOne({ _id: cid, "products._id": pid });
+
+  // const productQuantity = await cartModel.findOne({  "products.quantity":1});
+  // console.log(productQuantity)
+
+  const productFind = await cartModel.find({ _id: cid, "products._id": pid, "products.quantity": { $gt: 1 } })
+
+  if(productInCarts){
+  const updatedCart = await cartModel.findOneAndUpdate(
+    { 
+      _id: cid,
+      products: { $elemMatch: { _id: pid, quantity: { $gt: 0 } } }
+    },
+    { $inc: { "products.$.quantity": -1 } }
+  );
+  
+  if (!updatedCart) {
+    // Si updatedCart es null, significa que no se encontró un documento que cumpla los criterios de búsqueda
+    await cartModel.deleteOne(
+      { _id: cid, "products._id": pid},
+    );
+  } else {
+    console.log(updatedCart.products);
+  }
+}
+
+  res.status(200).send({ message: 'Product removed from carts', cart});
 })
+
+
 
 
 
