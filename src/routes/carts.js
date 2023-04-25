@@ -110,16 +110,16 @@ routerCart.delete('/:cid/product/:pid', async (req, res) =>{
   const updatedCart = await cartModel.findOneAndUpdate(
     { 
       _id: cid,
-      products: { $elemMatch: { _id: pid, quantity: { $gt: 0 } } }
+      products: { $elemMatch: { _id: pid, quantity: { $gt: 1 } } }
     },
     { $inc: { "products.$.quantity": -1 } }
   );
   
   if (!updatedCart) {
     // Si updatedCart es null, significa que no se encontró un documento que cumpla los criterios de búsqueda
-    await cartModel.deleteOne(
-      { _id: cid, "products._id": pid},
-    );
+    await cartModel.updateOne(
+    {_id:cid},
+    {$pull:{products: {_id:pid,quantity:1}}})
   } else {
     console.log(updatedCart.products);
   }

@@ -4,13 +4,6 @@ let user;
 let chatBox = document.getElementById('chatBox');
 
 
-// Swal.fire({
-//     title: 'Hola Coder',
-//     text: 'Alerta básica',
-//     icon:'success'
-// })
-
-
 Swal.fire({
     title: 'Identificate',
     input: 'text',
