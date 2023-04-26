@@ -101,10 +101,6 @@ routerCart.delete('/:cid/product/:pid', async (req, res) =>{
 
   const productInCarts = await cartModel.findOne({ _id: cid, "products._id": pid });
 
-  // const productQuantity = await cartModel.findOne({  "products.quantity":1});
-  // console.log(productQuantity)
-
-  const productFind = await cartModel.find({ _id: cid, "products._id": pid, "products.quantity": { $gt: 1 } })
 
   if(productInCarts){
   const updatedCart = await cartModel.findOneAndUpdate(
