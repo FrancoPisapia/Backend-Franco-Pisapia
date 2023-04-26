@@ -64,6 +64,13 @@ routerProduct.put('/:pid',async (req,res)=>{
   let {pid} = req.params;
 
   let productToReplace = req.body;
+
+  let product = await productsModel.find({_id:pid})
+
+  if (product.length === 0){
+    return res.status(404).send({ message: 'Product not found' });
+  }
+
   if(!productToReplace.title || !productToReplace.description|| !productToReplace.code || !productToReplace.price || !productToReplace.stock || !productToReplace.category){
      return res.send({status:404,error : "Complete all values"});
   };
@@ -74,6 +81,12 @@ routerProduct.put('/:pid',async (req,res)=>{
 
 routerProduct.delete ('/:pid', async (req,res)=>{
   let {pid} = req.params;
+  
+  let product = await productsModel.find({_id:pid})
+  if (product.length === 0){
+    return res.status(404).send({ message: 'Product not found' });
+  }
+
   let result = await productsModel.deleteOne({_id:pid});
   res.status(200).send(result)
 });

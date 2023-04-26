@@ -57,7 +57,7 @@ routerCart.post('/:cid/product/:pid', async (req, res) =>{
   const {cid, pid} = req.params;
 
   const cart = await cartModel.find({_id:cid});
-  if (!cart) {
+  if (cart.length === 0) {
     return res.status(404).send({ message: 'Cart not found' });
   }
 
@@ -90,7 +90,7 @@ routerCart.delete('/:cid/product/:pid', async (req, res) =>{
 
 
   const cart = await cartModel.find({_id:cid});
-  if (!cart) {
+  if (cart.length === 0) {
     return res.status(404).send({ message: 'Cart not found' });
   }
 
@@ -100,7 +100,6 @@ routerCart.delete('/:cid/product/:pid', async (req, res) =>{
   }
 
   const productInCarts = await cartModel.findOne({ _id: cid, "products._id": pid });
-
 
   if(productInCarts){
   const updatedCart = await cartModel.findOneAndUpdate(
@@ -116,10 +115,10 @@ routerCart.delete('/:cid/product/:pid', async (req, res) =>{
     await cartModel.updateOne(
     {_id:cid},
     {$pull:{products: {_id:pid,quantity:1}}})
-  } else {
-    console.log(updatedCart.products);
+  } 
+  }else{
+    return res.status(404).send({ message: 'product does not exist in cart' });
   }
-}
 
   res.status(200).send({ message: 'Product removed from carts', cart});
 })
