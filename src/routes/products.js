@@ -60,6 +60,30 @@ routerProduct.post('/',async (req,res)=>{
   res.status(200).send(result)
 });
 
+routerProduct.put('/imagen/:pid', uploader.single('file'), async (req,res) =>
+{
+  let {pid} = req.params
+  const product =  await productsModel.find({_id:pid});
+
+  if(!req.file)
+  {
+    res.status(400).send({ status: 'error', error: "No se pudo guardar la imagen." });
+  }
+
+  const path= req.file.path
+  
+
+  let result= await productsModel.updateOne ({_id:pid},
+    {$push:{thumbnail: path}});
+  
+  res.status(200).send('Imagén del proudcto agregada')
+
+
+})
+
+
+
+
 routerProduct.put('/:pid',async (req,res)=>{
   let {pid} = req.params;
 
