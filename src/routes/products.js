@@ -15,10 +15,53 @@ const productManager = new ProductManager ();
 //  **********************************Mongo DataBase*************************************************//
 //Busqueda de todos los objetos
 routerProduct.get ('/',async (req,res)=>{
+
+  let { limit, page, sort, query } = req.query;
+
+  //Si no se especifica limit ni page serán 10 y 1 por defecto
+  limit = limit || 10;
+  page = page || 1;
+
+  //Filter y sortOption serán objetos vacios
+  let filter = {};
+  let sortOption = {};
+
+  //Verifico la existencia de query
+  if(query){
+    filter = { $or: [{ category: query }, { title: query }] } 
+  }
+
+
+  //Verifico que exista el sort
+  if(sort){
+    sortOption = { price: sort === 'asc' ? 1 : -1 };
+  }
+
  try{
-    let products = await productsModel.find();
+
+  const options = {
+    page: page,
+    limit: limit,
+    sort: sortOption
+  };
+  
+  //Veo de aplicar las opciones de filtro y búsqueda
+    let products = await productsModel
+    .paginate(filter,options)
+
+    
     //res.send({result:'seccess',payload:products});
-    res.status(200).send(products)
+    res.status(200).send({
+      products: products.docs,
+      totalPages: products.totalPages,
+      prevPage: products.hasPrevPage ? products.prevPage : null,
+      nextPage: products.hasNextPage ? products.nextPage : null,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      prevLink: products.hasPrevPage ? `/api/products?limit=${limit}&page=${products.prevPage}&sort=${sort}&query=${query}` : null,
+      nextLink: products.hasNextPage ? `/api/products?limit=${limit}&page=${products.nextPage}&sort=${sort}&query=${query}` : null
+    });
  }
  catch (e)
  {

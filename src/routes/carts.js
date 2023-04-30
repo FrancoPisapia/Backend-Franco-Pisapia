@@ -26,8 +26,7 @@ routerCart.post('/',async (req,res)=>{
 //Buscar todos los carritos
 routerCart.get('/', async (req,res)=>{
   try{
-    let carts = await cartModel.find();
-    //res.send({result:'seccess',payload:products});
+    let carts = await cartModel.find().populate('products._id');
     res.status(200).send(carts)
  }
  catch (e)
@@ -40,9 +39,8 @@ routerCart.get('/', async (req,res)=>{
 routerCart.get('/:cid', async (req,res)=>{
   let {cid}= req.params
   try{
-    let cart = await cartModel.find({_id:cid});
-    //res.send({result:'seccess',payload:products});
-    res.status(200).send(cart)
+    let cart = await cartModel.find({_id:cid}).populate('products._id');
+    res.status(200).send({payload:cart})
  }
  catch (e)
  {
@@ -77,6 +75,57 @@ routerCart.post('/:cid/product/:pid', async (req, res) =>{
     const result = await cartModel.updateOne(
       {_id:cid},
       {$push:{products: {_id:pid,quantity:1}}})
+  }
+
+  res.status(200).send({ message: 'Product added to cart', cart});
+});
+
+//Actualizar todo el carrito por body
+routerCart.put('/:cid', async (req,res) =>{
+  const {cid} = req.params;
+  const product = req.body
+
+  const cart = await cartModel.find({_id:cid});
+  if (cart.length === 0) {
+    return res.status(404).send({ message: 'Cart not found' });
+  }
+
+  if (!product._id || !product.quantity){
+    return res.send({status:404,error : "Complete all values"});
+  }
+
+  let result= await cartModel.updateOne (
+    {_id:cid},
+    { $set: { products: product } });
+  res.status(200).send(result)
+
+})
+
+
+
+
+//Actualizar la cantidad de productos desde el body
+routerCart.put('/:cid/product/:pid', async (req, res) =>{
+  const {cid, pid} = req.params;
+  const {quantity} = req.body
+
+  const cart = await cartModel.find({_id:cid});
+  if (cart.length === 0) {
+    return res.status(404).send({ message: 'Cart not found' });
+  }
+
+  const product = await productsModel.findOne({ _id: pid });
+  if (!product) {
+    return res.status(404).send({ message: 'Product not found' });
+  }
+
+  const productInCarts = await cartModel.findOne({ _id: cid, "products._id": pid });
+
+  if (productInCarts) {
+
+    const result = await cartModel.updateOne(
+      {_id:cid,"products._id":pid},
+      {"products.$.quantity":quantity});
   }
 
   res.status(200).send({ message: 'Product added to cart', cart});
@@ -123,6 +172,23 @@ routerCart.delete('/:cid/product/:pid', async (req, res) =>{
   res.status(200).send({ message: 'Product removed from carts', cart});
 })
 
+//Elimina todos los productos del carrito
+routerCart.delete('/:cid', async (req, res) =>{
+  const {cid} = req.params;
+
+
+  const cart = await cartModel.find({_id:cid})
+  if (cart.length === 0) {
+    return res.status(404).send({ message: 'Cart not found' });
+  }
+
+
+  const result = await cartModel.updateOne(
+  {_id:cid},
+  {$set:{products:[]}})
+
+  res.status(200).send({ message: 'Products removed from carts', result});
+})
 
 
 
