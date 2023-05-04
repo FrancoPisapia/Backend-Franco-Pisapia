@@ -26,12 +26,12 @@ routerCart.post('/',async (req,res)=>{
 //Buscar todos los carritos
 routerCart.get('/', async (req,res)=>{
   try{
-    let carts = await cartModel.find().populate('products._id');
+    let carts = await cartModel.find();
     res.status(200).send(carts)
  }
  catch (e)
  {
-    console.log(`cannot get users with mongoose ${e}`)
+    console.log(`cannot get carts with mongoose ${e}`)
  }
 
 });
@@ -182,12 +182,22 @@ routerCart.delete('/:cid', async (req, res) =>{
     return res.status(404).send({ message: 'Cart not found' });
   }
 
+  const productsInCart = await cartModel.findOne(
+    { _id: cid, products: [] }
+  );
+
+
+  if(productsInCart){
+    const result = await cartModel.deleteOne({_id:cid})
+    res.status(200).send({ message: 'Cart deleted'});
+  }
 
   const result = await cartModel.updateOne(
   {_id:cid},
   {$set:{products:[]}})
 
-  res.status(200).send({ message: 'Products removed from carts', result});
+
+  res.status(200).send({ message: 'Products removed from carts',result});
 })
 
 
