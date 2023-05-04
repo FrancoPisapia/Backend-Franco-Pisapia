@@ -190,14 +190,16 @@ routerCart.delete('/:cid', async (req, res) =>{
   if(productsInCart){
     const result = await cartModel.deleteOne({_id:cid})
     res.status(200).send({ message: 'Cart deleted'});
+  } else{
+    const result = await cartModel.updateOne(
+      {_id:cid},
+      {$set:{products:[]}})
+    
+    
+      res.status(200).send({ message: 'Products removed from carts',result});
   }
 
-  const result = await cartModel.updateOne(
-  {_id:cid},
-  {$set:{products:[]}})
 
-
-  res.status(200).send({ message: 'Products removed from carts',result});
 })
 
 
