@@ -1,8 +1,3 @@
-//const express = require('express');
-//const ProductManager = require('./productManager')
-//const productsRouter = require('./routes/products')
-
-import {ProductManager,CartManager} from '../src/dao/fileSystem/Managers.js';
 import express from 'express'
 import productsRouter from './routes/products.js'
 import cartsRouter from './routes/carts.js';
@@ -12,6 +7,11 @@ import __dirname from './utils/handlebars.js';
 import {Server} from 'socket.io';
 import mongoose from "mongoose";
 import { messageModel } from './dao/models/messagesModels.js';
+import MongoStore from 'connect-mongo';
+import routerSessions from './routes/sessions.js';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+
 
 
 const app = express();
@@ -38,36 +38,38 @@ mongoose.connect('mongodb+srv://francopisapia405:uPTbiSDQYTlKc3wm@codercluster.x
   .then(() => console.log('Connected to database'))
   .catch((err) => console.log(`Error connecting to database: ${err}`));
 
+//Session con Mongo
+
+app.use(cookieParser())
+
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl:"mongodb+srv://francopisapia405:uPTbiSDQYTlKc3wm@codercluster.xlmgp1b.mongodb.net/?retryWrites=true&w=majority",
+        mongoOptions:{useNewUrlParser:true,useUnifiedTopology:true},
+        ttl:100
+      }),
+      secret:"asd3ñc3okasod",
+      //Resave mantiene la sesión activa, de estar en false está morirá en caso de que exista inactividad
+      resave:false,
+      //saveUnitialized permite guardar cualquier sesión. De estar en false la sesión no se guardará si está vacio el objeto final
+      saveUninitialized:false
+    }))
+
+
+
+
+
 
 //Routers
 app.use(express.json());
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
-// app.use('/api/chat',chatRouter);
+app.use('/api/sessions', routerSessions);
+//app.use('/api/session', routerSession);
 
 
 
 
-// Websockets
-// socketServer.on('connection',socket =>{
-
-//     socket.on ('message', data =>{
-//         console.log(data)
-//     });
-    
-//     socket.emit('soloUnUsuario', 'Mensaje recibido por el usuario');
-
-//     socketServer.emit('mensajeTodos','Mensaje para todos');
-
-//     socket.broadcast.emit('mensajeTodosMenosSocketActual','Mensaje que pueden leer todos menos el socket actual');
-
-//     socket.on('chatRoom1', (data) =>
-//     {
-//       console.log(data);
-
-//       socket.broadcast.emit('chatRoom1', data);
-//     });
-//   });
 
 //******PARA EL CHAT ***** */
 let messages =[];
