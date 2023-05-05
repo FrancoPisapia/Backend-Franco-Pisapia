@@ -50,7 +50,8 @@ routerSessions.post('/login',async (req,res) =>{
     }
     
 });
-//******Pùblico ******/
+
+//******Público ******/
 const publicRouteMiddleware = (req, res, next) => {
     // Verificar si no hay una sesión activa
     if (!req.session || !req.session.user) {
