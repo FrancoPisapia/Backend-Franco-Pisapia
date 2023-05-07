@@ -26,13 +26,23 @@ const auth = async (req,res,next) =>{
 //*****Endpoints ******/
 routerSessions.post('/login',async (req,res) =>{
     const { firstName, lastName, email, age, password } = req.body
-
     try{
         const existingUser = await userModel.findOne({ email:email});
+        //console.log(email)
         if (existingUser) {
             //409 la peticion tuvo un conflicto
             return res.status(409).send({ message: 'El usuario ya existe' });
-        }
+        } else if( !existingUser && email === "adminCoder@coder.com" && password === "adminCod3r123"){
+            let result2 = await userModel.create({
+            firstName,
+            lastName,
+            email,
+            age,
+            password,
+            rol:"Admin"
+         });
+         res.status(200).send(result2)
+        } else{
 
         let result = await userModel.create({
             firstName,
@@ -41,8 +51,9 @@ routerSessions.post('/login',async (req,res) =>{
             age,
             password
          });
+         res.status(200).send(resul)
+        }
 
-         res.status(200).send(result)
     }
     catch (e)
     {
@@ -52,34 +63,35 @@ routerSessions.post('/login',async (req,res) =>{
 });
 
 //******Público ******/
-const publicRouteMiddleware = (req, res, next) => {
-    // Verificar si no hay una sesión activa
-    if (!req.session || !req.session.user) {
-      // Redirigir a la pantalla de inicio de sesión
-      return res.redirect('/login');
-    }
+// const publicRouteMiddleware = (req, res, next) => {
+//     // Verificar si no hay una sesión activa
+//     if (!req.session || !req.session.user) {
+//       // Redirigir a la pantalla de inicio de sesión
+//       return res.redirect('/login');
+//     }
   
-    // Continuar con la siguiente ruta
-    next();
-  };
+//     // Continuar con la siguiente ruta
+//     next();
+//   };
 
-//******Privado ******/
-  const privateRouteMiddleware = (req, res, next) => {
-    // Verificar si hay una sesión activa
-    if (req.session && req.session.user) {
-      // Redirigir a la pantalla de perfil
-      return res.redirect('/profile');
-    }
+// //******Privado ******/
+//   const privateRouteMiddleware = (req, res, next) => {
+//     // Verificar si hay una sesión activa
+//     if (req.session && req.session.user) {
+//       // Redirigir a la pantalla de perfil
+//       return res.redirect('/profile');
+//     }
   
-    // Continuar con la siguiente ruta
-    next();
-  };
+//     // Continuar con la siguiente ruta
+//     next();
+//   };
 
 routerSessions.get('/login',async (req,res) =>{
     const {email,password } = req.body
 
     try{
         const existingUser = await userModel.findOne({ email:email});
+
         if (!existingUser) {
             
             return res.status(404).send({ message: 'El usuario no existe' });
@@ -102,7 +114,7 @@ routerSessions.get('/login',async (req,res) =>{
 
 routerSessions.get('/privado', auth, (req,res) =>{
 
-    res.send (`Mail:${req.session.email} contraseña :${req.session.password}`)
+  res.status(200).redirect('/api/products')
   })
 
 
