@@ -24,7 +24,7 @@ const auth = async (req,res,next) =>{
 
 
 //*****Endpoints ******/
-routerSessions.post('/login',async (req,res) =>{
+routerSessions.post('/sigup',async (req,res) =>{
     const { firstName, lastName, email, age, password } = req.body
     try{
         const existingUser = await userModel.findOne({ email:email});
@@ -41,7 +41,7 @@ routerSessions.post('/login',async (req,res) =>{
             password,
             rol:"Admin"
          });
-         res.status(200).send(result2)
+         res.status(201).send(result2)
         } else{
 
         let result = await userModel.create({
@@ -51,7 +51,7 @@ routerSessions.post('/login',async (req,res) =>{
             age,
             password
          });
-         res.status(200).send(resul)
+         res.status(201).send(result)
         }
 
     }
@@ -86,10 +86,12 @@ routerSessions.post('/login',async (req,res) =>{
 //     next();
 //   };
 
-routerSessions.get('/login',async (req,res) =>{
+routerSessions.post('/login',async (req,res) =>{
     const {email,password } = req.body
 
     try{
+
+
         const existingUser = await userModel.findOne({ email:email});
 
         if (!existingUser) {
@@ -112,13 +114,13 @@ routerSessions.get('/login',async (req,res) =>{
     
 });
 
-routerSessions.get('/privado', auth, (req,res) =>{
+routerSessions.post('/privado', auth, (req,res) =>{
 
   res.status(200).redirect('/api/products')
   })
 
 
-routerSessions.get ('/logout',(req,res) =>{
+routerSessions.post ('/logout',(req,res) =>{
     req.session.destroy(err=>{
       if(err){
         return res.send({status:'logout error',body:err})
