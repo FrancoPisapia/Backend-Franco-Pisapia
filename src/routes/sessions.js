@@ -32,8 +32,6 @@ const auth = async (req,res,next) =>{
 routerSessions.post('/register',passport.authenticate('register',{failureRedirect:'failregister'}),async (req,res) =>{
     res.send({status:'Success', message:'User Registered'})
 
-
-
     // const { firstName, lastName, email, age, password } = req.body
     // try{
     //     const existingUser = await userModel.findOne({ email:email});
