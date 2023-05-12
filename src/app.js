@@ -11,7 +11,8 @@ import MongoStore from 'connect-mongo';
 import routerSessions from './routes/sessions.js';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-
+import passport from 'passport'
+import initializePassport from './config/passport.config.js'
 
 
 const app = express();
@@ -67,8 +68,10 @@ app.use('/api/carts', cartsRouter);
 app.use('/api/sessions', routerSessions);
 //app.use('/api/session', routerSession);
 
-
-
+//Passport
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session())
 
 
 //******PARA EL CHAT ***** */
