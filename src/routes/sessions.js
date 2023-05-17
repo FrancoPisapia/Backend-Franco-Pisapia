@@ -12,26 +12,27 @@ const app = express();
 const routerSessions = express.Router(); 
 app.use(express.urlencoded({extended:true}));
 
-const users =[]
+
 //*****    Endpoints  ********//
 
 routerSessions.post('/register',async (req,res) =>{
 
    const {firstName,lastName,email,age,password} = req.body;
 
-   const exist = users.find(user => user.email === email);
+   const exist = await userModel.find({email:email});
 
-   if(exist) return res.status(400).send({status:'error', error:"User already exists"});
+   if(exist.length > 0) return res.status(400).send({status:'error', error:"User already exists"});
 
-   const user ={
+   const user = await userModel.create({
       firstName,
       lastName,
       email,
       age,
-      password
-   }
+      password :await createHash(req.body.password,10)
+   })
 
-   users.push(user);
+   
+
 
    const accessToken = generateToken(user)
     res.send({status:'Success', accessToken})
@@ -41,9 +42,26 @@ routerSessions.post('/register',async (req,res) =>{
 
 routerSessions.post('/login',async (req,res)=>{
    const {email,password} = req.body;
-   const user= users.find (user => user.email === email && user.password === password)
+
+   if (!email && !password)
+   {
+       throw new Error('Email and Password invalid format.');
+   }
+
+   const user= await userModel.findOne({email:email});
+
+   if (!user)
+   {
+    return res.status(401).send({ message: 'Login failed, user not found.' });
+   }
+
+   const isHashedPassword = await isValidPassword(password,user.password)
    
-   if(!user) return res.status(400).send({status:'error',error:'Email or password incorrect'})
+   if (!isHashedPassword)
+   {
+       return res.status(401).send({ message: 'Login failed, invalid password.'})
+   }
+
 
    const accesstoken = generateToken(user);
 

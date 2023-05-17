@@ -1,4 +1,4 @@
-import {ProductManager,CartManager} from '../dao/fileSystem/Managers.js';
+//import {ProductManager,CartManager} from '../dao/fileSystem/Managers.js';
 import express from 'express'
 import uploader from '../utils/multer.js'
 import { cartModel } from '../dao/models/cartsModels.js';
@@ -8,8 +8,8 @@ const app = express();
 const routerCart = express.Router(); 
 app.use(express.urlencoded({extended:true}))
 
-const cartManager = new CartManager();
-const productManager = new ProductManager();
+// const cartManager = new CartManager();
+// const productManager = new ProductManager();
 
 
 //  **********************************Mongo DataBase*************************************************//
