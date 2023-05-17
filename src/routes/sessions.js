@@ -1,36 +1,68 @@
 import express from 'express'
 import uploader from '../utils/multer.js'
 import { userModel } from '../dao/models/usersModel.js';
-import { createHash, isValidPassword } from '../utils/hash.js';
 import { isValidObjectId } from 'mongoose';
+import { createHash, isValidPassword } from '../utils/hash.js'
 //import session from 'express-session';
 import passport from 'passport'
 import MongoStore from 'connect-mongo'
-
+import { generateToken,authToken } from '../utils/token.js';
 
 const app = express();
 const routerSessions = express.Router(); 
 app.use(express.urlencoded({extended:true}));
 
+const users =[]
+//*****    Endpoints  ********//
+
+routerSessions.post('/register',async (req,res) =>{
+
+   const {firstName,lastName,email,age,password} = req.body;
+
+   const exist = users.find(user => user.email === email);
+
+   if(exist) return res.status(400).send({status:'error', error:"User already exists"});
+
+   const user ={
+      firstName,
+      lastName,
+      email,
+      age,
+      password
+   }
+
+   users.push(user);
+
+   const accessToken = generateToken(user)
+    res.send({status:'Success', accessToken})
+
+});
 
 
-//*****Midlewares ******/
-const auth = async (req,res,next) =>{
-    const {email,password } = req.body
-    const existingUser = await userModel.findOne({ email:email });
+routerSessions.post('/login',async (req,res)=>{
+   const {email,password} = req.body;
+   const user= users.find (user => user.email === email && user.password === password)
+   
+   if(!user) return res.status(400).send({status:'error',error:'Email or password incorrect'})
 
-    if (req.session.email == existingUser.email && req.session.password == existingUser.password) {
-        //409 la peticion tuvo un conflicto
-        return next()
-    }
-    return res.status(401).send('Authorization error')
-  }
+   const accesstoken = generateToken(user);
 
 
+   res.send({status:'Success',accesstoken})
 
-//*****Endpoints ******/
-routerSessions.post('/register',passport.authenticate('register',{failureRedirect:'failregister'}),async (req,res) =>{
-    res.send({status:'Success', message:'User Registered'})
+ })
+
+ routerSessions.get('/current',authToken ,(req,res)=>{
+
+   res.send({status:'success',payload:req.user})
+   
+})
+
+
+
+//INICIO CON PASSPORT******/
+// routerSessions.post('/register',passport.authenticate('register',{failureRedirect:'failregister'}),async (req,res) =>{
+//     res.send({status:'Success', message:'User Registered'})
 
     // const { firstName, lastName, email, age, password } = req.body
     // try{
@@ -61,30 +93,40 @@ routerSessions.post('/register',passport.authenticate('register',{failureRedirec
     //      res.status(201).send(result)
     //     }
     
-});
+// });
 
 
-routerSessions.get('/failregister',async (req,res)=>{
-    console.log('Failed Strategy')
-    res.send({error:'Failed'})
- });
+// routerSessions.get('/failregister',async (req,res)=>{
+//     console.log('Failed Strategy')
+//     res.send({error:'Failed'})
+//  });
 
 
- routerSessions.post('/login', passport.authenticate('login',{failureRedirect:'faillogin'}),async (req,res)=>{
-    if(!req.user) return res.status(400).send({status:'error', error:'Invalid credentials'});
+//  routerSessions.post('/login', passport.authenticate('login',{failureRedirect:'faillogin'}),async (req,res)=>{
+//     if(!req.user) return res.status(400).send({status:'error', error:'Invalid credentials'});
  
-    req.session.user ={
-       firtsName : req.user.firtName,
-       lastName:req.user.lastName,
-       email: req.user.email
-    }
-    res.send({status:'Succeed', payload: req.session.user});
- })
+//     req.session.user ={
+//        firtsName : req.user.firtName,
+//        lastName:req.user.lastName,
+//        email: req.user.email
+//     }
+//     res.send({status:'Succeed', payload: req.session.user});
+//  })
  
- routerSessions.get('/faillogin',(req,res)=>{
-    res.send({error:'Failed Login'})
- })
+//  routerSessions.get('/faillogin',(req,res)=>{
+//     res.send({error:'Failed Login'})
+//  })
  
+
+// routerSessions.post('/privado', passport.authenticate('login',{failureRedirect:'faillogin'}), (req,res) =>{
+
+//    res.status(200).redirect('/api/products')
+//    })
+
+//*******FIN PASSPORT  *******/
+
+
+
 
 
 //******Público ******/
@@ -139,10 +181,7 @@ routerSessions.get('/failregister',async (req,res)=>{
     
 // });
 
-// routerSessions.post('/privado', auth, (req,res) =>{
 
-//   res.status(200).redirect('/api/products')
-//   })
 
 
 // routerSessions.post ('/logout',(req,res) =>{
